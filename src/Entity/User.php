@@ -2,8 +2,12 @@
 
 namespace App\Entity;
 
+use App\Entity\Address;
+use App\Entity\Phone;
+
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity()
@@ -46,6 +50,17 @@ class User
     private string $email;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Phone", mappedBy="user", cascade={"all"})
+     */
+    private $phonenumbers;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Address", cascade={"all"})
+     * @ORM\JoinColumn(name="address_id", referencedColumnName="id", onDelete="CASCADE")
+     */
+    private Address $address;
+
+    /**
      * @ORM\Column(type="datetime")
      */
     private \DateTime $createdAt;
@@ -54,6 +69,7 @@ class User
     public function __construct()
     {
         $this->createdAt = new \DateTime();
+        $this->phonenumber = new ArrayCollection();
     }
 
     public function getId(): int
@@ -97,5 +113,23 @@ class User
         return $this->createdAt;
     }
 
+    public function getPhonenumber()
+    {
+        return $this->phonenumbers;
+    }
 
+    public function addPhoneNumber(Phone $phonenumber)
+    {
+        $this->phonenumbers[] = $phonenumber;
+    }
+
+    public function getAddress(): Address
+    {
+        return $this->address;
+    }
+
+    public function setAddress(Address $address): void
+    {
+        $this->address = $address;
+    }
 }

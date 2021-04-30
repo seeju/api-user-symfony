@@ -30,6 +30,10 @@ class GetUser
             ], Response::HTTP_NOT_FOUND);
         }
 
-        return JsonResponse::fromJsonString($this->serializer->serialize($users, 'json'));
+        return JsonResponse::fromJsonString($this->serializer->serialize($users, 'json', [
+            'circular_reference_handler' => function($object){
+              return $object->getId();
+            }
+          ]));
     }
 }

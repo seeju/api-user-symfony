@@ -22,8 +22,12 @@ class ListUsers
     public function __invoke(): Response
     {
         $repository = $this->entityManager->getRepository(User::class);
-        $blogPosts = $repository->findAll();
-        $response = $this->serializer->serialize($blogPosts, 'json');
+        $users = $repository->findAll();
+        $response = $this->serializer->serialize($users, 'json', [
+            'circular_reference_handler' => function($object){
+              return $object->getId();
+            }
+          ]);
         return JsonResponse::fromJsonString($response);
     }
 }
